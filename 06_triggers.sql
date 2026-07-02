@@ -43,3 +43,38 @@ BEGIN
     END IF;
 END;
 /
+
+--===============================================
+-- TRIGGER PACIENTE UNICO POR CITA
+--===============================================
+
+CREATE OR REPLACE TRIGGER trg_cita_paciente_unico
+BEFORE
+INSERT OR UPDATE ON cita
+FOR EACH ROW
+DECLARE
+    v_contador NUMBER := 0;
+BEGIN
+    IF :NEW.id_estudiante IS NOT NULL THEN
+        v_contador := v_contador +1;
+    END IF;
+
+    IF :NEW.id_docente IS NOT NULL THEN
+        v_contador := v_contador +1;
+    END IF;
+
+    IF :NEW.id_admin IS NOT NULL THEN
+        v_contador := v_contador +1;
+    END IF;
+
+    IF v_contador = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'NO SE PERMITE NO ASIGNAR TIPO PACIENTE');
+    END IF;
+    IF v_contador > 1 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'NO SE PERMITE ASIGNAR MAS DE UN TIPO PACIENTE');
+    END IF;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
+END;
+/
