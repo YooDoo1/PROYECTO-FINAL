@@ -60,14 +60,14 @@
    **Tablas/columnas afectadas:** valida `cita.id_estudiante`, `cita.id_docente`, `cita.id_admin`.
    **Tablas modificadas:** ninguna.
 
-10. **Crear tabla de auditoría para citas.** 
+10. **Crear tabla de auditoría para citas.**  HECHO
     **Tipo de proceso SQL:** `CREATE TABLE auditoria_cita`.
     **Enunciado:** Se debe crear una tabla de auditoría para registrar la trazabilidad de las operaciones sobre citas, ya que el sistema administra atenciones psicológicas y debe conservar evidencia de cambios sobre datos sensibles.
     **Qué hace:** almacena historial de inserciones, actualizaciones y eliminaciones sobre `cita`.
     **Columnas sugeridas:** `id_auditoria`, `tabla_afectada`, `id_cita`, `tipo_operacion`, `fecha_anterior`, `fecha_nueva`, `hora_anterior`, `hora_nueva`, `id_servicio_anterior`, `id_servicio_nuevo`, `id_psicologo_anterior`, `id_psicologo_nuevo`, `usuario_aplica`, `fecha_auditoria`.
     **Tablas/columnas afectadas:** nueva tabla `auditoria_cita`; registra cambios originados desde `cita`.
 
-11. **Crear trigger de auditoría sobre la tabla `cita`.**
+11. **Crear trigger de auditoría sobre la tabla `cita`.** HECHO
     **Tipo de proceso SQL:** `CREATE OR REPLACE TRIGGER trg_auditoria_cita`.
     **Enunciado:** Se debe implementar un trigger de auditoría para cumplir con la trazabilidad del proceso de atención psicológica. Cada cambio sobre una cita debe dejar constancia del usuario, fecha y tipo de operación.
     **Qué hace:** después de `INSERT`, `UPDATE` o `DELETE` en `cita`, inserta un registro en `auditoria_cita`.

@@ -343,3 +343,25 @@ CREATE TABLE Cita (
         FOREIGN KEY (id_psicologo)
         REFERENCES Psicologo(id_psico)
 );
+
+
+--===============================================
+-- TABLA AUDITORIA CITA
+--===============================================
+
+CREATE TABLE auditoria_cita(
+    aud_id_auditoria NUMBER(10) PRIMARY KEY,
+    aud_tabla_editada VARCHAR2(50) NOT NULL, 
+    aud_id_cita NUMBER(10), 
+    aud_tipo_operacion VARCHAR2(50) NOT NULL, 
+    aud_fecha_anterior DATE, 
+    aud_fecha_nueva DATE, 
+    aud_hora_anterior DATE, 
+    aud_hora_nueva DATE, 
+    aud_id_servicio_anterior NUMBER(10), 
+    aud_id_servicio_nuevo NUMBER(10), 
+    aud_id_psicologo_anterior NUMBER(10), 
+    aud_id_psicologo_nuevo NUMBER(10), 
+    aud_cita_usuario VARCHAR2(50), 
+    aud_cita_fecha DATE NOT NULL
+);
