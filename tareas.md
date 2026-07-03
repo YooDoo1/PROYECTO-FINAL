@@ -1,66 +1,66 @@
 
-1. **Crear secuencias para los identificadores principales del modelo PSIREG.** 
+1. **Crear secuencias para los identificadores principales del modelo PSIREG.** HECHO
    **Tipo de proceso SQL:** `CREATE SEQUENCE`.
    **Enunciado:** Se deben implementar secuencias para eliminar la inserción manual de identificadores y garantizar consistencia en las llaves primarias del modelo físico. Esto mantiene el control de generación de IDs en Oracle y evita duplicidad durante la carga mediante procedimientos.
    **Objetos a crear:** `seq_cargo`, `seq_psicologo`, `seq_facultad`, `seq_carrera`, `seq_estudiante`, `seq_docente`, `seq_administrativo`, `seq_servicio`, `seq_cita`.
    **Tablas/columnas afectadas:** `cargo.id_cargo`, `psicologo.id_psico`, `facultad.id_facultad`, `carrera.id_carrera`, `estudiante.id_paciente`, `docente.id_paciente`, `administrativo.id_paciente`, `servicio.id_servicio`, `cita.id_cita`.
 
-2. **Crear procedimiento para cargar tablas paramétricas iniciales.**
+2. **Crear procedimiento para cargar tablas paramétricas iniciales.** HECHO
    **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_cargar_parametricas`.
    **Enunciado:** Se debe implementar un procedimiento que cargue los registros base requeridos antes de operar el sistema, garantizando que existan cargos, facultades, carreras, servicios y tipos de teléfono antes de registrar psicólogos, pacientes o citas. Este proceso respeta las dependencias del modelo Entidad-Relación.
    **Qué hace:** inserta datos iniciales y evita duplicados mediante validación `NOT EXISTS` o manejo de excepción `DUP_VAL_ON_INDEX`.
    **Tablas/columnas afectadas:** `cargo(id_cargo, nombre_cargo)`, `facultad(id_facultad, nombre_facultad)`, `carrera(id_carrera, nombre_carrera, id_facu)`, `servicio(id_servicio, nombre_servicio)`, `TipoTlf_Est(id_tipo, nombre_tipo)`, `TipoTlf_Docente(id_tipo, nombre_tipo)`, `TipoTlf_Admin(id_tipo, nombre_tipo)`.
 
-3. **Crear procedimiento para registrar psicólogos.**
+3. **Crear procedimiento para registrar psicólogos.** HECHO
    **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_insertar_psicologo`.
    **Enunciado:** Se debe implementar un procedimiento para registrar psicólogos, ya que esta entidad atiende las citas psicológicas dentro del modelo de negocio. El procedimiento debe validar que el cargo exista antes de insertar, manteniendo la integridad referencial con `cargo`.
    **Qué hace:** inserta un psicólogo con datos personales, contacto, dirección y cargo.
    **Parámetros requeridos:** `p_primer_nombre`, `p_segundo_nombre`, `p_apellido_paterno`, `p_apellido_materno`, `p_cedula`, `p_genero`, `p_correo_institucional`, `p_telefono`, `p_casa`, `p_calle`, `p_corregimiento`, `p_id_cargo`.
    **Tablas/columnas afectadas:** `psicologo(id_psico, primer_nombre, segundo_nombre, apellido_paterno, apellido_materno, cedula, genero, correo_institucional, telefono, casa, calle, corregimiento, id_cargo)`.
 
-4. **Crear procedimiento para registrar estudiantes atendidos.**
+4. **Crear procedimiento para registrar estudiantes atendidos.** HECHO
    **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_insertar_estudiante`.
    **Enunciado:** Se debe implementar un procedimiento para registrar estudiantes como tipo de paciente. La inserción debe validar la carrera asociada, porque el estudiante pertenece a una carrera dentro del modelo lógico. También debe registrar su teléfono en la tabla correspondiente.
    **Qué hace:** inserta el estudiante y su teléfono asociado.
    **Parámetros requeridos:** `p_primer_nombre`, `p_segundo_nombre`, `p_apellido_paterno`, `p_apellido_materno`, `p_cedula`, `p_genero`, `p_correo_institucional`, `p_casa`, `p_calle`, `p_corregimiento`, `p_id_carrera`, `p_id_tipo_telefono`, `p_telefono`.
    **Tablas/columnas afectadas:** `estudiante(id_paciente, primer_nombre, segundo_nombre, apellido_paterno, apellido_materno, cedula, genero, correo_institucional, casa, calle, corregimiento, id_carrera)`, `Tlf_Estudiante(idPaciente, idTipo, telefono)`.
 
-5. **Crear procedimiento para registrar docentes atendidos.**
+5. **Crear procedimiento para registrar docentes atendidos.** HECHA
    **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_insertar_docente`.
    **Enunciado:** Se debe implementar un procedimiento para registrar docentes como pacientes atendidos por la DNOP. El procedimiento debe validar la facultad asociada, ya que el docente pertenece a una facultad en el modelo relacional.
    **Qué hace:** inserta el docente y su teléfono asociado.
    **Parámetros requeridos:** `p_primer_nombre`, `p_segundo_nombre`, `p_apellido_paterno`, `p_apellido_materno`, `p_cedula`, `p_genero`, `p_correo_institucional`, `p_telefono_personal`, `p_casa`, `p_calle`, `p_corregimiento`, `p_id_facultad`, `p_id_tipo_telefono`, `p_telefono`.
    **Tablas/columnas afectadas:** `docente(id_paciente, primer_nombre, segundo_nombre, apellido_paterno, apellido_materno, cedula, genero, correo_institucional, telefono_personal, casa, calle, corregimiento, id_facultad)`, `Tlf_Docente(idPaciente, idTipo, telefono)`.
 
-6. **Crear procedimiento para registrar administrativos atendidos.**
+6. **Crear procedimiento para registrar administrativos atendidos.** HECHA
    **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_insertar_administrativo`.
    **Enunciado:** Se debe implementar un procedimiento para registrar administrativos como el tercer tipo de paciente del modelo. Este proceso mantiene separada la información de administrativos, estudiantes y docentes, respetando la especialización definida en el modelo Entidad-Relación.
    **Qué hace:** inserta el administrativo y su teléfono asociado.
    **Parámetros requeridos:** `p_primer_nombre`, `p_segundo_nombre`, `p_apellido_paterno`, `p_apellido_materno`, `p_cedula`, `p_genero`, `p_correo_institucional`, `p_telefono_personal`, `p_casa`, `p_calle`, `p_corregimiento`, `p_departamento`, `p_id_tipo_telefono`, `p_telefono`.
    **Tablas/columnas afectadas:** `administrativo(id_paciente, primer_nombre, segundo_nombre, apellido_paterno, apellido_materno, cedula, genero, correo_institucional, telefono_personal, casa, calle, corregimiento, departamento)`, `Tlf_Admin(idPaciente, idTipo, telefono)`.
 
-7. **Crear función para validar e identificar el tipo de paciente asociado a una cita.**
+7. **Crear función para validar e identificar el tipo de paciente asociado a una cita.** HECHO
    **Tipo de proceso SQL:** `CREATE OR REPLACE FUNCTION fn_tipo_paciente_cita`.
    **Enunciado:** Se debe implementar una función que centralice la regla de negocio de la tabla `cita`: una cita solo puede estar asociada a un estudiante, un docente o un administrativo, nunca a varios al mismo tiempo. Esto evita repetir la misma validación en procedimientos y reportes.
-   **Qué hace:** recibe `p_id_estudiante`, `p_id_docente`, `p_id_admin`; retorna `ESTUDIANTE`, `DOCENTE` o `ADMINISTRATIVO`; si no hay paciente o hay más de uno, debe generar error.
+   **Qué hace:** recibes `p_id_estudiante`, `p_id_docente`, `p_id_admin`; retorna `ESTUDIANTE`, `DOCENTE` o `ADMINISTRATIVO`; si no hay paciente o hay más de uno, debe generar error.
    **Tablas/columnas evaluadas:** `cita.id_estudiante`, `cita.id_docente`, `cita.id_admin`.
-   **Tablas modificadas:** ninguna; es función de validación.
+   **Tablas modificadas:** ninguna; es función de validación. 
 
-8. **Crear procedimiento para registrar citas psicológicas.**
+8. **Crear procedimiento para registrar citas psicológicas.** HECHO
    **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_insertar_cita`.
    **Enunciado:** Se debe implementar un procedimiento para registrar citas, porque la cita representa la atención psicológica principal del sistema PSIREG. El proceso debe validar servicio, psicólogo y tipo único de paciente antes de insertar.
    **Qué hace:** inserta una cita psicológica y debe invocar `fn_tipo_paciente_cita` para validar que solo se indique un paciente.
    **Parámetros requeridos:** `p_fecha`, `p_hora`, `p_id_servicio`, `p_id_estudiante`, `p_id_docente`, `p_id_admin`, `p_id_psicologo`.
    **Tablas/columnas afectadas:** `cita(id_cita, fecha, hora, id_servicio, id_estudiante, id_docente, id_admin, id_psicologo)`.
 
-9. **Documentar y conservar el trigger de paciente único por cita.**
+9. **Documentar y conservar el trigger de paciente único por cita.** HECHO
    **Tipo de proceso SQL:** `CREATE OR REPLACE TRIGGER trg_cita_paciente_unico`.
    **Enunciado:** El trigger existente debe mantenerse y documentarse porque protege directamente la tabla `cita` ante inserciones o actualizaciones realizadas fuera del procedimiento. Esto refuerza la integridad semántica del modelo, donde cada cita pertenece a un solo tipo de paciente.
    **Qué hace:** antes de `INSERT` o `UPDATE`, cuenta si se llenó `id_estudiante`, `id_docente` o `id_admin`. Si no hay ninguno o hay más de uno, genera error.
    **Tablas/columnas afectadas:** valida `cita.id_estudiante`, `cita.id_docente`, `cita.id_admin`.
    **Tablas modificadas:** ninguna.
 
-10. **Crear tabla de auditoría para citas.**
+10. **Crear tabla de auditoría para citas.** 
     **Tipo de proceso SQL:** `CREATE TABLE auditoria_cita`.
     **Enunciado:** Se debe crear una tabla de auditoría para registrar la trazabilidad de las operaciones sobre citas, ya que el sistema administra atenciones psicológicas y debe conservar evidencia de cambios sobre datos sensibles.
     **Qué hace:** almacena historial de inserciones, actualizaciones y eliminaciones sobre `cita`.

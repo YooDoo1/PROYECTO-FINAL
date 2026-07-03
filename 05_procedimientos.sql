@@ -198,3 +198,326 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
+
+
+--===============================================
+-- PROCEDIMIENTO INSERTAR ESTUDIANTE ATENDIDO
+--===============================================
+CREATE OR REPLACE PROCEDURE sp_insertar_estudiante(
+    p_primer_nombre IN estudiante.primer_nombre%TYPE,
+    p_segundo_nombre IN estudiante.segundo_nombre%TYPE,
+    p_apellido_pat IN estudiante.apellido_paterno%TYPE,
+    p_apellido_mat IN estudiante.apellido_materno%TYPE,
+    p_cedula IN estudiante.cedula%TYPE,
+    p_genero IN estudiante.genero%TYPE,
+    p_correo_institucional IN estudiante.correo_institucional%TYPE,
+    p_casa IN estudiante.casa%TYPE,
+    p_calle IN estudiante.calle%TYPE,
+    p_corregimiento IN estudiante.corregimiento%TYPE,
+    p_id_carrera IN estudiante.id_carrera%TYPE,
+    p_id_tipo_telefono IN Tlf_Estudiante.idTipo%TYPE,
+    p_telefono IN Tlf_Estudiante.telefono%TYPE
+)
+AS
+    v_id_paciente estudiante.id_paciente%TYPE;
+    v_id_carrera NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_id_carrera
+    FROM carrera
+    WHERE id_carrera = p_id_carrera;
+
+    IF v_id_carrera = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'NO EXISTE ESTA CARRERA. NO SE PUEDE REGISTRAR AL ESTUDIANTE');
+    END IF;
+    
+    INSERT INTO estudiante (
+        id_paciente,
+        primer_nombre,
+        segundo_nombre,
+        apellido_paterno,
+        apellido_materno,
+        cedula,
+        genero,
+        correo_institucional,
+        casa,
+        calle,
+        corregimiento,
+        id_carrera
+    ) VALUES (
+        v_id_paciente,
+        p_primer_nombre,
+        p_segundo_nombre,
+        p_apellido_pat,
+        p_apellido_mat,
+        p_cedula,
+        p_genero,
+        p_correo_institucional,
+        p_casa,
+        p_calle,
+        p_corregimiento,
+        p_id_carrera
+    );
+
+    INSERT INTO Tlf_Estudiante (
+        idPaciente,
+        idTipo,
+        telefono
+    ) VALUES (
+        v_id_paciente,
+        p_id_tipo_telefono,
+        p_telefono
+    );
+
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+END;
+/
+
+--===============================================
+-- PROCEDIMIENTO INSERTAR DOCENTE ATENDIDO
+--===============================================
+CREATE OR REPLACE PROCEDURE sp_insertar_docente(
+    p_primer_nombre IN docente.primer_nombre%TYPE,
+    p_segundo_nombre IN docente.segundo_nombre%TYPE,
+    p_apellido_paterno IN docente.apellido_paterno%TYPE,
+    p_apellido_materno IN docente.apellido_materno%TYPE,
+    p_cedula IN docente.cedula%TYPE,
+    p_genero IN docente.genero%TYPE,
+    p_correo_institucional IN docente.correo_institucional%TYPE,
+    p_telefono_personal IN docente.telefono_personal%TYPE,
+    p_casa IN docente.casa%TYPE,
+    p_calle IN docente.calle%TYPE,
+    p_corregimiento IN docente.corregimiento%TYPE,
+    p_id_facultad IN docente.id_facultad%TYPE,
+    p_id_tipo_telefono IN Tlf_Docente.idTipo%TYPE,
+    p_telefono IN Tlf_Docente.telefono%TYPE
+)
+AS
+    v_id_paciente   docente.id_paciente%TYPE;
+    v_id_facultad   NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_id_facultad
+    FROM facultad
+    WHERE id_facultad = p_id_facultad;
+
+    IF v_id_facultad = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'NO EXISTE ESTA FACULTAD. NO SE PUEDE REGISTRAR AL DOCENTE');
+    END IF;
+
+    INSERT INTO docente (
+        primer_nombre,
+        segundo_nombre,
+        apellido_paterno,
+        apellido_materno,
+        cedula,
+        genero,
+        correo_institucional,
+        telefono_personal,
+        casa,
+        calle,
+        corregimiento,
+        id_facultad
+    ) VALUES (
+        p_primer_nombre,
+        p_segundo_nombre,
+        p_apellido_paterno,
+        p_apellido_materno,
+        p_cedula,
+        p_genero,
+        p_correo_institucional,
+        p_telefono_personal,
+        p_casa,
+        p_calle,
+        p_corregimiento,
+        p_id_facultad
+    )
+    RETURNING id_paciente INTO v_id_paciente;
+
+    INSERT INTO Tlf_Docente (
+        idPaciente,
+        idTipo,
+        telefono
+    ) VALUES (
+        v_id_paciente,
+        p_id_tipo_telefono,
+        p_telefono
+    );
+
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+END;
+/
+
+--===============================================
+-- PROCEDIMIENTO INSERTAR ADMINISTRATIVO ATENDIDO
+--===============================================
+CREATE OR REPLACE PROCEDURE sp_insertar_administrativo(
+    p_primer_nombre IN administrativo.primer_nombre%TYPE,
+    p_segundo_nombre IN administrativo.segundo_nombre%TYPE,
+    p_apellido_paterno IN administrativo.apellido_paterno%TYPE,
+    p_apellido_materno IN administrativo.apellido_materno%TYPE,
+    p_cedula IN administrativo.cedula%TYPE,
+    p_genero IN administrativo.genero%TYPE,
+    p_correo_institucional IN administrativo.correo_institucional%TYPE,
+    p_telefono_personal IN administrativo.telefono_personal%TYPE,
+    p_casa IN administrativo.casa%TYPE,
+    p_calle IN administrativo.calle%TYPE,
+    p_corregimiento IN administrativo.corregimiento%TYPE,
+    p_departamento IN administrativo.departamento%TYPE,
+    p_id_tipo_telefono IN Tlf_Admin.idTipo%TYPE,
+    p_telefono IN Tlf_Admin.telefono%TYPE
+)
+AS
+    v_id_paciente administrativo.id_paciente%TYPE;
+BEGIN
+    INSERT INTO administrativo (
+        primer_nombre,
+        segundo_nombre,
+        apellido_paterno,
+        apellido_materno,
+        cedula,
+        genero,
+        correo_institucional,
+        telefono_personal,
+        casa,
+        calle,
+        corregimiento,
+        departamento
+    ) VALUES (
+        p_primer_nombre,
+        p_segundo_nombre,
+        p_apellido_paterno,
+        p_apellido_materno,
+        p_cedula,
+        p_genero,
+        p_correo_institucional,
+        p_telefono_personal,
+        p_casa,
+        p_calle,
+        p_corregimiento,
+        p_departamento
+    )
+    RETURNING id_paciente INTO v_id_paciente;
+
+    INSERT INTO Tlf_Admin (
+        idPaciente,
+        idTipo,
+        telefono
+    ) VALUES (
+        v_id_paciente,
+        p_id_tipo_telefono,
+        p_telefono
+    );
+
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+END;
+/
+
+--===============================================
+-- PROCEDIMIENTO INSERTAR CITA
+--===============================================
+
+CREATE OR REPLACE PROCEDURE sp_insertar_cita(
+    p_fecha IN cita.fecha%TYPE,
+    p_hora IN cita.hora%TYPE,
+    p_id_servicio IN cita.id_servicio%TYPE,
+    p_id_estudiante IN cita.id_estudiante%TYPE,
+    p_id_docente IN cita.id_docente%TYPE,
+    p_id_admin IN cita.id_admin%TYPE,
+    p_id_psicologo IN cita.id_psicologo%TYPE
+)
+AS
+    v_tipo VARCHAR2(20);
+BEGIN
+    v_tipo := fn_tipo_paciente_cita(
+        p_id_estudiante,
+        p_id_docente,
+        p_id_admin
+    );
+    
+    IF v_tipo = 'ESTUDIANTE' THEN
+        INSERT INTO cita(
+            fecha,
+            hora,
+            id_servicio,
+            id_estudiante,
+            id_docente,
+            id_admin,
+            id_psicologo
+        ) VALUES (
+            p_fecha,
+            p_hora,
+            p_id_servicio,
+            p_id_estudiante,
+            NULL,
+            NULL,
+            p_id_psicologo
+        );
+
+    ELSIF v_tipo = 'DOCENTE' THEN
+        INSERT INTO cita(
+            fecha,
+            hora,
+            id_servicio,
+            id_estudiante,
+            id_docente,
+            id_admin,
+            id_psicologo
+        ) VALUES (
+            p_fecha,
+            p_hora,
+            p_id_servicio,
+            NULL,
+            p_id_docente,
+            NULL,
+            p_id_psicologo
+        );
+
+    ELSIF v_tipo = 'ADMINISTRATIVO' THEN
+        INSERT INTO cita(
+            fecha,
+            hora,
+            id_servicio,
+            id_estudiante,
+            id_docente,
+            id_admin,
+            id_psicologo
+        ) VALUES (
+            p_fecha,
+            p_hora,
+            p_id_servicio,
+            NULL,
+            NULL,
+            p_id_admin,
+            p_id_psicologo
+        );
+    END IF;
+    
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+END;
+/
+

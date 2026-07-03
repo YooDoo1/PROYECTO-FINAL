@@ -28,7 +28,7 @@ BEGIN
     END IF; 
 
     IF p_id_estudiante IS NOT NULL THEN
-        RETURN 'Estudiante';
+        RETURN 'ESTUDIANTE';
     ELSIF p_id_docente IS NOT NULL THEN
         RETURN 'DOCENTE';
     ELSE
