@@ -405,3 +405,19 @@ CREATE TABLE reporte_atenciones(
     nombre_servicio VARCHAR2(100) NOT NULL,
     usuario_genera VARCHAR2(50) NOT NULL
 );
+
+
+--===============================================
+-- ALTER TABLE AGREGAR ESTADO A CITA
+--===============================================
+
+ALTER TABLE Cita
+ADD estado VARCHAR2(20) DEFAULT 'ACTIVA' NOT NULL;
+
+--===============================================
+-- CONSTRAINT ESTADO DE CITA
+--===============================================
+
+ALTER TABLE Cita
+ADD CONSTRAINT chk_cita_estado
+CHECK(estado IN ('ACTIVA', 'ELIMINADA'));

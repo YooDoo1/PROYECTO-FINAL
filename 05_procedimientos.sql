@@ -531,8 +531,84 @@ CREATE OR REPLACE PROCEDURE sp_reprogramar_cita(
     p_nueva_hora IN Cita.hora%TYPE,
     p_id_servicio IN Cita.id_servicio%TYPE,
     p_id_psicologo IN Cita.id_psicologo%TYPE
-) AS
-    
+)
+AS
+    v_id_cita NUMBER;
+    v_id_servicio NUMBER;
+    v_id_psicologo NUMBER;
 BEGIN
+    SELECT COUNT(*)
+    INTO v_id_cita
+    FROM Cita
+    WHERE id_cita = p_id_cita;
+
+    IF v_id_cita = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'NO EXISTE ESTA CITA. NO SE PUEDE REPROGRAMAR');
+    END IF;
+
+    SELECT COUNT(*)
+    INTO v_id_servicio
+    FROM servicio
+    WHERE id_servicio = p_id_servicio;
+
+    IF v_id_servicio = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'NO EXISTE ESTE SERVICIO. NO SE PUEDE REPROGRAMAR LA CITA');
+    END IF;
+
+    SELECT COUNT(*)
+    INTO v_id_psicologo
+    FROM psicologo
+    WHERE id_psico = p_id_psicologo;
+
+    IF v_id_psicologo = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'NO EXISTE ESTE PSICOLOGO. NO SE PUEDE REPROGRAMAR LA CITA');
+    END IF;
+
+    UPDATE cita
+    SET
+        fecha = p_nueva_fecha,
+        hora = p_nueva_hora,
+        id_servicio = p_id_servicio,
+        id_psicologo = p_id_psicologo
+    WHERE id_cita = p_id_cita;
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+END;
+/
+
+--===============================================
+-- PROCEDIMIENTO ELIMINAR CITA
+--===============================================
+
+CREATE OR REPLACE PROCEDURE sp_eliminar_cita(
+    p_id_cita IN Cita.id_cita%TYPE
+)
+AS
+    v_id_cita NUMBER;
+BEGIN
+    SELECT COUNT(*)
+    INTO v_id_cita
+    FROM Cita
+    WHERE id_cita = p_id_cita;
+
+    IF v_id_cita = 0 THEN
+        RAISE_APPLICATION_ERROR(-20002, 'ERROR LA CITA NO EXISTE');
+
+    ELSE
+        UPDATE Cita
+        SET
+            estado = 'ELIMINADA'
+        WHERE id_cita = p_id_cita;
+    END IF;
     
-    IF 
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+END;
+/

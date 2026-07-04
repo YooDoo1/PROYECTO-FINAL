@@ -81,21 +81,21 @@
     **Columnas sugeridas:** `id_psicologo`, `id_servicio`, `tipo_paciente`, `cantidad_citas`, `ultima_fecha_atencion`, `usuario_actualiza`, `fecha_actualizacion`.
     **Tablas/columnas afectadas:** nueva tabla `estadistica_atenciones`; consolida datos desde `cita.id_psicologo`, `cita.id_servicio`, `cita.id_estudiante`, `cita.id_docente`, `cita.id_admin`.
 
-13. **Crear trigger para actualizar estadísticas de atenciones.** HECHO
+13. **Crear trigger para actualizar estadísticas de atenciones.** HECHO GRACIAS A LA GLORIA DE DIOS
     **Tipo de proceso SQL:** `CREATE OR REPLACE TRIGGER trg_estadistica_atenciones`.
     **Enunciado:** Se debe implementar un trigger que mantenga actualizada la estadística de citas cuando se inserte, actualice o elimine una atención. Este proceso garantiza consistencia entre la tabla transaccional `cita` y la tabla derivada `estadistica_atenciones`.
     **Qué hace:** en `INSERT`, incrementa la cantidad de citas según psicólogo, servicio y tipo de paciente; en `UPDATE`, ajusta la combinación anterior y la nueva si cambia psicólogo, servicio o paciente; en `DELETE`, descuenta la cita eliminada.
     **Tablas/columnas leídas:** `cita(id_psicologo, id_servicio, id_estudiante, id_docente, id_admin, fecha)`.
     **Tablas/columnas afectadas:** `estadistica_atenciones(id_psicologo, id_servicio, tipo_paciente, cantidad_citas, ultima_fecha_atencion, usuario_actualiza, fecha_actualizacion)`.
 
-14. **Crear procedimiento para reprogramar citas.** WIP
+14. **Crear procedimiento para reprogramar citas.** HECHO
     **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_reprogramar_cita`.
     **Enunciado:** Se debe implementar un procedimiento para modificar fecha, hora, servicio o psicólogo de una cita existente. Esto representa una operación normal del proceso de atención y debe controlarse por programación almacenada para validar datos antes del `UPDATE`.
     **Qué hace:** actualiza una cita existente después de validar que `id_cita`, `id_servicio` e `id_psicologo` existan.
     **Parámetros requeridos:** `p_id_cita`, `p_nueva_fecha`, `p_nueva_hora`, `p_id_servicio`, `p_id_psicologo`.
     **Tablas/columnas afectadas:** `cita(fecha, hora, id_servicio, id_psicologo)`. También activa indirectamente `auditoria_cita` y `estadistica_atenciones`.
 
-15. **Crear procedimiento para eliminar o anular citas.**
+15. **Crear procedimiento para eliminar o anular citas.** HECHO
     **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_eliminar_cita` o `sp_anular_cita`.
     **Enunciado:** Se debe implementar un procedimiento para retirar una cita registrada por error o no realizada. Si se mantiene el modelo actual, el proceso será eliminación física; si se agrega un campo de estado, será anulación lógica.
     **Qué hace:** valida que la cita exista y luego elimina o anula el registro.
