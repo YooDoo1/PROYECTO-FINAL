@@ -74,21 +74,21 @@
     **Tablas/columnas leídas:** `cita(id_cita, fecha, hora, id_servicio, id_estudiante, id_docente, id_admin, id_psicologo)`.
     **Tablas/columnas afectadas:** `auditoria_cita(id_auditoria, tabla_afectada, id_cita, tipo_operacion, fecha_anterior, fecha_nueva, hora_anterior, hora_nueva, id_servicio_anterior, id_servicio_nuevo, id_psicologo_anterior, id_psicologo_nuevo, usuario_aplica, fecha_auditoria)`.
 
-12. **Crear tabla estadística de atenciones psicológicas.**
+12. **Crear tabla estadística de atenciones psicológicas.** HECHO
     **Tipo de proceso SQL:** `CREATE TABLE estadistica_atenciones`.
     **Enunciado:** Se debe crear una tabla estadística para mantener acumulados de citas por psicólogo, servicio y tipo de paciente. Esta tabla es consistente con el proceso de negocio porque permite medir las atenciones psicológicas realizadas por la DNOP.
     **Qué hace:** almacena totales consolidados para evitar recalcular siempre desde `cita`.
     **Columnas sugeridas:** `id_psicologo`, `id_servicio`, `tipo_paciente`, `cantidad_citas`, `ultima_fecha_atencion`, `usuario_actualiza`, `fecha_actualizacion`.
     **Tablas/columnas afectadas:** nueva tabla `estadistica_atenciones`; consolida datos desde `cita.id_psicologo`, `cita.id_servicio`, `cita.id_estudiante`, `cita.id_docente`, `cita.id_admin`.
 
-13. **Crear trigger para actualizar estadísticas de atenciones.**
+13. **Crear trigger para actualizar estadísticas de atenciones.** HECHO
     **Tipo de proceso SQL:** `CREATE OR REPLACE TRIGGER trg_estadistica_atenciones`.
     **Enunciado:** Se debe implementar un trigger que mantenga actualizada la estadística de citas cuando se inserte, actualice o elimine una atención. Este proceso garantiza consistencia entre la tabla transaccional `cita` y la tabla derivada `estadistica_atenciones`.
     **Qué hace:** en `INSERT`, incrementa la cantidad de citas según psicólogo, servicio y tipo de paciente; en `UPDATE`, ajusta la combinación anterior y la nueva si cambia psicólogo, servicio o paciente; en `DELETE`, descuenta la cita eliminada.
     **Tablas/columnas leídas:** `cita(id_psicologo, id_servicio, id_estudiante, id_docente, id_admin, fecha)`.
     **Tablas/columnas afectadas:** `estadistica_atenciones(id_psicologo, id_servicio, tipo_paciente, cantidad_citas, ultima_fecha_atencion, usuario_actualiza, fecha_actualizacion)`.
 
-14. **Crear procedimiento para reprogramar citas.**
+14. **Crear procedimiento para reprogramar citas.** WIP
     **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_reprogramar_cita`.
     **Enunciado:** Se debe implementar un procedimiento para modificar fecha, hora, servicio o psicólogo de una cita existente. Esto representa una operación normal del proceso de atención y debe controlarse por programación almacenada para validar datos antes del `UPDATE`.
     **Qué hace:** actualiza una cita existente después de validar que `id_cita`, `id_servicio` e `id_psicologo` existan.
@@ -102,7 +102,7 @@
     **Parámetros requeridos:** `p_id_cita`.
     **Tablas/columnas afectadas:** si es eliminación física: `cita(id_cita)`. Si es anulación lógica: se debe agregar `cita.estado_cita`. También activa indirectamente `auditoria_cita` y `estadistica_atenciones`.
 
-16. **Crear tabla para reportes generados de atenciones psicológicas.**
+16. **Crear tabla para reportes generados de atenciones psicológicas.** HECHO
     **Tipo de proceso SQL:** `CREATE TABLE reporte_atenciones`.
     **Enunciado:** Se debe crear una tabla de reporte si se requiere almacenar formalmente los reportes generados por rango de fecha y psicólogo. Esto es consistente con el objetivo del proyecto de generar y almacenar reportes psicológicos formales.
     **Qué hace:** almacena el resultado de los reportes generados por procedimiento.

@@ -176,3 +176,170 @@ EXCEPTION
         DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
+
+--===============================================
+-- TRIGGER ACTUALIZAR ESTADISTICA DE ATENCIONES
+--===============================================
+
+CREATE OR REPLACE TRIGGER trg_estadistica_atenciones
+AFTER
+INSERT OR UPDATE OR DELETE ON cita
+FOR EACH ROW
+DECLARE
+    v_tipo_nuevo estadistica_atenciones.tipo_paciente%TYPE;
+    v_tipo_anterior estadistica_atenciones.tipo_paciente%TYPE;
+    v_existe NUMBER;
+BEGIN
+    IF INSERTING THEN
+        v_tipo_nuevo := fn_tipo_paciente_cita(
+            :NEW.id_estudiante,
+            :NEW.id_docente,
+            :NEW.id_admin
+        );
+
+        SELECT COUNT(*)
+        INTO v_existe
+        FROM estadistica_atenciones
+        WHERE id_psicologo = :NEW.id_psicologo
+        AND id_servicio = :NEW.id_servicio
+        AND tipo_paciente = v_tipo_nuevo;
+
+        IF v_existe = 0 THEN
+            INSERT INTO estadistica_atenciones(
+                id_psicologo,
+                id_servicio,
+                tipo_paciente,
+                cantidad_citas,
+                ultima_fecha_atencion,
+                usuario_actualiza,
+                fecha_actualizacion
+            ) VALUES (
+                :NEW.id_psicologo,
+                :NEW.id_servicio,
+                v_tipo_nuevo,
+                1,
+                :NEW.fecha,
+                USER,
+                SYSDATE
+            );
+        ELSE
+            UPDATE estadistica_atenciones
+            SET
+                cantidad_citas = cantidad_citas + 1,
+                ultima_fecha_atencion = GREATEST(ultima_fecha_atencion, :NEW.fecha),
+                usuario_actualiza = USER,
+                fecha_actualizacion = SYSDATE
+            WHERE id_psicologo = :NEW.id_psicologo
+            AND id_servicio = :NEW.id_servicio
+            AND tipo_paciente = v_tipo_nuevo;
+        END IF;
+    ELSIF UPDATING THEN
+
+        v_tipo_anterior := fn_tipo_paciente_cita(
+            :OLD.id_estudiante,
+            :OLD.id_docente,
+            :OLD.id_admin
+        );
+
+        v_tipo_nuevo := fn_tipo_paciente_cita(
+            :NEW.id_estudiante,
+            :NEW.id_docente,
+            :NEW.id_admin
+        );
+
+        IF :OLD.id_psicologo = :NEW.id_psicologo
+        AND :OLD.id_servicio = :NEW.id_servicio
+        AND v_tipo_anterior = v_tipo_nuevo THEN
+
+            UPDATE estadistica_atenciones
+            SET
+                ultima_fecha_atencion = GREATEST(ultima_fecha_atencion, :NEW.fecha),
+                usuario_actualiza = USER,
+                fecha_actualizacion = SYSDATE
+            WHERE id_psicologo = :NEW.id_psicologo
+            AND id_servicio = :NEW.id_servicio
+            AND tipo_paciente = v_tipo_nuevo;
+
+        ELSE
+            UPDATE estadistica_atenciones
+            SET
+                cantidad_citas = cantidad_citas - 1,
+                usuario_actualiza = USER,
+                fecha_actualizacion = SYSDATE
+            WHERE id_psicologo = :OLD.id_psicologo
+            AND id_servicio = :OLD.id_servicio
+            AND tipo_paciente = v_tipo_anterior;
+
+            DELETE FROM estadistica_atenciones
+            WHERE cantidad_citas = 0;
+
+            SELECT COUNT(*)
+            INTO v_existe
+            FROM estadistica_atenciones
+            WHERE id_psicologo = :NEW.id_psicologo
+            AND id_servicio = :NEW.id_servicio
+            AND tipo_paciente = v_tipo_nuevo;
+
+            IF v_existe = 0 THEN
+                INSERT INTO estadistica_atenciones(
+                    id_psicologo,
+                    id_servicio,
+                    tipo_paciente,
+                    cantidad_citas,
+                    ultima_fecha_atencion,
+                    usuario_actualiza,
+                    fecha_actualizacion
+                ) VALUES (
+                    :NEW.id_psicologo,
+                    :NEW.id_servicio,
+                    v_tipo_nuevo,
+                    1,
+                    :NEW.fecha,
+                    USER,
+                    SYSDATE
+                );
+
+            ELSE
+                UPDATE estadistica_atenciones
+                SET
+                    cantidad_citas = cantidad_citas + 1,
+                    ultima_fecha_atencion = GREATEST(ultima_fecha_atencion, :NEW.fecha),
+                    usuario_actualiza = USER,
+                    fecha_actualizacion = SYSDATE
+                WHERE id_psicologo = :NEW.id_psicologo
+                AND id_servicio = :NEW.id_servicio
+                AND tipo_paciente = v_tipo_nuevo;
+
+            END IF;
+        END IF;
+    ELSIF DELETING THEN
+
+        v_tipo_anterior := fn_tipo_paciente_cita(
+            :OLD.id_estudiante,
+            :OLD.id_docente,
+            :OLD.id_admin
+        );
+
+        UPDATE estadistica_atenciones
+        SET
+            cantidad_citas = cantidad_citas - 1,
+            usuario_actualiza = USER,
+            fecha_actualizacion = SYSDATE
+        WHERE id_psicologo = :OLD.id_psicologo
+        AND id_servicio = :OLD.id_servicio
+        AND tipo_paciente = v_tipo_anterior;
+
+        DELETE FROM estadistica_atenciones
+        WHERE cantidad_citas = 0;
+    END IF;
+
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR NO SE ENCONTRO DATOS SOBRE EL CUAL OPERAR EL DISPARADOR' || SQLERRM);
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+END;
+/
+

@@ -521,3 +521,18 @@ EXCEPTION
 END;
 /
 
+--===============================================
+-- PROCEDIMIENTO REPROGRAMAR CITA
+--===============================================
+
+CREATE OR REPLACE PROCEDURE sp_reprogramar_cita(
+    p_id_cita IN Cita.id_cita%TYPE,
+    p_nueva_fecha IN Cita.fecha%TYPE,
+    p_nueva_hora IN Cita.hora%TYPE,
+    p_id_servicio IN Cita.id_servicio%TYPE,
+    p_id_psicologo IN Cita.id_psicologo%TYPE
+) AS
+    
+BEGIN
+    
+    IF 

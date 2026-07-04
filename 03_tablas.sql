@@ -365,3 +365,43 @@ CREATE TABLE auditoria_cita(
     aud_cita_usuario VARCHAR2(50), 
     aud_cita_fecha DATE NOT NULL
 );
+
+
+--===============================================
+-- TABLA ESTADISTICA DE ATENCIONES PSICOLOGICAS
+--===============================================
+
+CREATE TABLE estadistica_atenciones(
+    id_psicologo NUMBER(10) NOT NULL,
+    id_servicio NUMBER(10) NOT NULL,
+    tipo_paciente VARCHAR2(50) NOT NULL,
+    cantidad_citas NUMBER(10) DEFAULT 0 NOT NULL,
+    ultima_fecha_atencion DATE,
+    usuario_actualiza VARCHAR2(50),
+    fecha_actualizacion DATE DEFAULT SYSDATE NOT NULL,
+
+    PRIMARY KEY(id_psicologo, id_servicio, tipo_paciente),
+
+    CHECK(tipo_paciente IN ('ESTUDIANTE', 'DOCENTE', 'ADMINISTRATIVO'))
+);
+
+--===============================================
+-- TABLA REPORTE DE ATENCIONES PSICOLOGICAS
+--===============================================
+
+CREATE TABLE reporte_atenciones(
+    id_reporte NUMBER(10) PRIMARY KEY,
+    fecha_generacion DATE NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    id_cita NUMBER(10) NOT NULL,
+    fecha_cita DATE NOT NULL,
+    hora DATE NOT NULL,
+    id_psicologo NUMBER(10) NOT NULL,
+    nombre_psicologo VARCHAR2(150) NOT NULL,
+    id_paciente NUMBER(10) NOT NULL,
+    nombre_paciente VARCHAR2(150) NOT NULL,
+    tipo_paciente VARCHAR2(50) NOT NULL,
+    nombre_servicio VARCHAR2(100) NOT NULL,
+    usuario_genera VARCHAR2(50) NOT NULL
+);
