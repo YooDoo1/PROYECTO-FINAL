@@ -109,7 +109,7 @@
     **Columnas sugeridas:** `id_reporte`, `fecha_generacion`, `fecha_inicio`, `fecha_fin`, `id_cita`, `fecha_cita`, `hora`, `id_psicologo`, `nombre_psicologo`, `id_paciente`, `nombre_paciente`, `tipo_paciente`, `nombre_servicio`, `usuario_genera`.
     **Tablas/columnas afectadas:** nueva tabla `reporte_atenciones`; se llena con datos derivados de `cita`, `psicologo`, `servicio`, `estudiante`, `docente`, `administrativo`.
 
-17. **Crear procedimiento con cursor para generar reporte de atenciones por psicólogo.**
+17. **Crear procedimiento con cursor para generar reporte de atenciones por psicólogo.** 
     **Tipo de proceso SQL:** `CREATE OR REPLACE PROCEDURE sp_generar_reporte_atenciones`.
     **Enunciado:** Se debe implementar un procedimiento con cursor para cumplir el requisito de cursores, estructuras de control y controles de salida. El cursor debe recorrer las citas de un rango de fechas y consolidar la información de paciente, servicio y psicólogo.
     **Qué hace:** recorre las citas mediante cursor, determina el tipo de paciente, obtiene el nombre del paciente, obtiene el psicólogo y el servicio, e inserta el resultado en `reporte_atenciones` o lo muestra mediante `DBMS_OUTPUT`.
@@ -117,7 +117,7 @@
     **Tablas/columnas consultadas:** `cita(id_cita, fecha, hora, id_servicio, id_estudiante, id_docente, id_admin, id_psicologo)`, `psicologo(id_psico, primer_nombre, apellido_paterno)`, `servicio(id_servicio, nombre_servicio)`, `estudiante(id_paciente, primer_nombre, apellido_paterno)`, `docente(id_paciente, primer_nombre, apellido_paterno)`, `administrativo(id_paciente, primer_nombre, apellido_paterno)`.
     **Tablas/columnas afectadas si se almacena:** `reporte_atenciones`.
 
-18. **Crear función para obtener el nombre del paciente de una cita.**
+18. **Crear función para obtener el nombre del paciente de una cita.** HECHO
     **Tipo de proceso SQL:** `CREATE OR REPLACE FUNCTION fn_nombre_paciente_cita`.
     **Enunciado:** Se debe implementar una función auxiliar para obtener el nombre del paciente sin duplicar lógica en vistas, reportes y procedimientos. Esta función es necesaria porque el paciente puede estar en `estudiante`, `docente` o `administrativo`.
     **Qué hace:** recibe `p_id_estudiante`, `p_id_docente`, `p_id_admin`; devuelve el nombre completo del paciente correspondiente.
