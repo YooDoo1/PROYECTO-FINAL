@@ -3,14 +3,14 @@
    ============================================================================ */
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: CARGO
+   INSERCION: CARGO
 --------------------------------------------------------------------------- */
 INSERT INTO Cargo VALUES (1, 'Psicólogo Clínico');
 INSERT INTO Cargo VALUES (2, 'Director');
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: FACULTAD
+   INSERCION: FACULTAD
 --------------------------------------------------------------------------- */
 INSERT INTO Facultad VALUES (1, 'Ingeniería de Sistemas Computacionales');
 INSERT INTO Facultad VALUES (2, 'Ingeniería Civil');
@@ -18,7 +18,7 @@ INSERT INTO Facultad VALUES (3, 'Ingeniería Eléctrica');
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: CARRERA
+   INSERCION: CARRERA
 --------------------------------------------------------------------------- */
 INSERT INTO Carrera VALUES (1, 'Lic. Desarrollo Software', 1);
 INSERT INTO Carrera VALUES (2, 'Ing. Civil', 2);
@@ -26,7 +26,7 @@ INSERT INTO Carrera VALUES (3, 'Ing. Eléctrica', 3);
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: PSICOLOGO
+   INSERCION: PSICOLOGO
 --------------------------------------------------------------------------- */
 INSERT INTO Psicologo VALUES (
     1,
@@ -62,28 +62,28 @@ INSERT INTO Psicologo VALUES (
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: TIPO DE TELÉFONO DE ESTUDIANTE
+   INSERCION: TIPO DE TELEFONO DE ESTUDIANTE
 --------------------------------------------------------------------------- */
 INSERT INTO TipoTlf_Est VALUES (1, 'Personal');
 INSERT INTO TipoTlf_Est VALUES (2, 'Residencial');
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: TIPO DE TELÉFONO DE DOCENTE
+   INSERCION: TIPO DE TELEFONO DE DOCENTE
 --------------------------------------------------------------------------- */
 INSERT INTO TipoTlf_Docente VALUES (1, 'Personal');
 INSERT INTO TipoTlf_Docente VALUES (2, 'Residencial');
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: TIPO DE TELÉFONO DE ADMINISTRATIVO
+   INSERCION: TIPO DE TELEFONO DE ADMINISTRATIVO
 --------------------------------------------------------------------------- */
 INSERT INTO TipoTlf_Admin VALUES (1, 'Personal');
 INSERT INTO TipoTlf_Admin VALUES (2, 'Residencial');
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: ESTUDIANTE
+   INSERCION: ESTUDIANTE
 --------------------------------------------------------------------------- */
 INSERT INTO Estudiante VALUES (
     1001,
@@ -117,7 +117,7 @@ INSERT INTO Estudiante VALUES (
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: DOCENTE
+   INSERCION: DOCENTE
 --------------------------------------------------------------------------- */
 INSERT INTO Docente VALUES (
     2001,
@@ -153,7 +153,7 @@ INSERT INTO Docente VALUES (
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: ADMINISTRATIVO
+   INSERCION: ADMINISTRATIVO
 --------------------------------------------------------------------------- */
 INSERT INTO Administrativo VALUES (
     3001,
@@ -189,7 +189,7 @@ INSERT INTO Administrativo VALUES (
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: TELÉFONOS DE ESTUDIANTE
+   INSERCION: TELEFONOS DE ESTUDIANTE
 --------------------------------------------------------------------------- */
 INSERT INTO Tlf_Estudiante VALUES (1001, 1, 64567890);
 INSERT INTO Tlf_Estudiante VALUES (1001, 2, 2345678);
@@ -198,7 +198,7 @@ INSERT INTO Tlf_Estudiante VALUES (1002, 2, 2233445);
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: TELÉFONOS DE DOCENTE
+   INSERCION: TELEFONOS DE DOCENTE
 --------------------------------------------------------------------------- */
 INSERT INTO Tlf_Docente VALUES (2001, 1, 68974521);
 INSERT INTO Tlf_Docente VALUES (2001, 2, 2456789);
@@ -207,7 +207,7 @@ INSERT INTO Tlf_Docente VALUES (2002, 2, 2567890);
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: TELÉFONOS DE ADMINISTRATIVO
+   INSERCION: TELEFONOS DE ADMINISTRATIVO
 --------------------------------------------------------------------------- */
 INSERT INTO Tlf_Admin VALUES (3001, 1, 61112233);
 INSERT INTO Tlf_Admin VALUES (3001, 2, 2678901);
@@ -216,7 +216,7 @@ INSERT INTO Tlf_Admin VALUES (3002, 2, 2789012);
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: SERVICIO
+   INSERCION: SERVICIO
 --------------------------------------------------------------------------- */
 INSERT INTO Servicio VALUES (1, 'Orientación Psicológica');
 INSERT INTO Servicio VALUES (2, 'Terapia Individual');
@@ -224,18 +224,24 @@ INSERT INTO Servicio VALUES (3, 'Seguimiento Académico');
 
 
 /* ---------------------------------------------------------------------------
-   INSERCIÓN: CITAS
+   INSERCION: CITAS
    Nota:
-   El trigger trg_cita_paciente_unico valida que solo uno de estos campos
-   tenga valor por cada cita:
-     - id_estudiante
-     - id_docente
-     - id_admin
+   La columna hora usa DATE para guardar hora de atencion de forma compatible
+   con auditoria_cita y reporte_atenciones.
 --------------------------------------------------------------------------- */
-INSERT INTO Cita VALUES (
+INSERT INTO Cita (
+    id_cita,
+    fecha,
+    hora,
+    id_servicio,
+    id_estudiante,
+    id_docente,
+    id_admin,
+    id_psicologo
+) VALUES (
     1,
     TO_DATE('15/06/2026', 'DD/MM/YYYY'),
-    '08:00 AM',
+    TO_DATE('08:00', 'HH24:MI'),
     1,
     1001,
     NULL,
@@ -243,10 +249,19 @@ INSERT INTO Cita VALUES (
     1
 );
 
-INSERT INTO Cita VALUES (
+INSERT INTO Cita (
+    id_cita,
+    fecha,
+    hora,
+    id_servicio,
+    id_estudiante,
+    id_docente,
+    id_admin,
+    id_psicologo
+) VALUES (
     2,
     TO_DATE('16/06/2026', 'DD/MM/YYYY'),
-    '10:30 AM',
+    TO_DATE('10:30', 'HH24:MI'),
     2,
     NULL,
     2001,
@@ -254,10 +269,19 @@ INSERT INTO Cita VALUES (
     2
 );
 
-INSERT INTO Cita VALUES (
+INSERT INTO Cita (
+    id_cita,
+    fecha,
+    hora,
+    id_servicio,
+    id_estudiante,
+    id_docente,
+    id_admin,
+    id_psicologo
+) VALUES (
     3,
     TO_DATE('17/06/2026', 'DD/MM/YYYY'),
-    '02:00 PM',
+    TO_DATE('14:00', 'HH24:MI'),
     3,
     NULL,
     NULL,
