@@ -12,11 +12,10 @@ CREATE OR REPLACE PROCEDURE sp_cargar_parametricas(
 ) AS
     v_id_facultad facultad.id_facultad%TYPE;
 BEGIN
-    --insertar cargo nuevo
     INSERT INTO cargo (
-                id_cargo,
-                nombre_cargo
-    ) 
+        id_cargo,
+        nombre_cargo
+    )
     SELECT
         seq_id_cargo.NEXTVAL,
         p_nombre_cargo
@@ -26,11 +25,11 @@ BEGIN
         FROM cargo
         WHERE UPPER(TRIM(nombre_cargo)) = UPPER(TRIM(p_nombre_cargo))
     );
-    -- insertar facultad nueva
+
     INSERT INTO facultad (
-                id_facu,
-                nombre_facultad
-    ) 
+        id_facultad,
+        nombre_facultad
+    )
     SELECT
         seq_id_facultad.NEXTVAL,
         p_nombre_facultad
@@ -40,18 +39,17 @@ BEGIN
         FROM facultad
         WHERE UPPER(TRIM(nombre_facultad)) = UPPER(TRIM(p_nombre_facultad))
     );
-    -- carrera
-    SELECT id_facu
-        INTO v_id_facultad
+
+    SELECT id_facultad
+    INTO v_id_facultad
     FROM facultad
     WHERE UPPER(TRIM(nombre_facultad)) = UPPER(TRIM(p_nombre_facultad));
 
-
     INSERT INTO carrera (
-                id_carrera,
-                nombre_carrera,
-                id_facu
-    ) 
+        id_carrera,
+        nombre_carrera,
+        id_facu
+    )
     SELECT
         seq_id_carrera.NEXTVAL,
         p_nombre_carrera,
@@ -61,10 +59,8 @@ BEGIN
         SELECT 1
         FROM carrera
         WHERE UPPER(TRIM(nombre_carrera)) = UPPER(TRIM(p_nombre_carrera))
-        AND v_id_facultad = id_facu
+        AND id_facu = v_id_facultad
     );
-
-    -- servicio
 
     INSERT INTO servicio (
         id_servicio,
@@ -80,10 +76,9 @@ BEGIN
         WHERE UPPER(TRIM(nombre_servicio)) = UPPER(TRIM(p_nombre_servicio))
     );
 
-    -- tipo telefono estudiante
     INSERT INTO TipoTlf_Est (
-    id_tipo,
-    nombre_tipo
+        id_tipo,
+        nombre_tipo
     )
     SELECT
         seq_id_tipo_tlf_est.NEXTVAL,
@@ -95,10 +90,9 @@ BEGIN
         WHERE UPPER(TRIM(nombre_tipo)) = UPPER(TRIM(p_tipo_tlf_est))
     );
 
-    -- tipo telefono docente
     INSERT INTO TipoTlf_Docente (
-    id_tipo,
-    nombre_tipo
+        id_tipo,
+        nombre_tipo
     )
     SELECT
         seq_id_tipo_tlf_doc.NEXTVAL,
@@ -110,15 +104,13 @@ BEGIN
         WHERE UPPER(TRIM(nombre_tipo)) = UPPER(TRIM(p_tipo_tlf_doc))
     );
 
-    -- tipo telefono admin
     INSERT INTO TipoTlf_Admin (
-    id_tipo,
-    nombre_tipo
+        id_tipo,
+        nombre_tipo
     )
-
     SELECT
         seq_id_tipo_tlf_admin.NEXTVAL,
-       p_tipo_tlf_admin
+        p_tipo_tlf_admin
     FROM dual
     WHERE NOT EXISTS (
         SELECT 1
@@ -128,19 +120,18 @@ BEGIN
 
 EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO ' || SQLERRM);
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR: No existe facultad requerida para insetar la carrera' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR: NO EXISTE FACULTAD REQUERIDA PARA INSERTAR LA CARRERA ' || SQLERRM);
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR de ejecucion' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
 
 
 --===============================================
--- PROCEDIMIENTO INSERTAR PSICONIGGA
+-- PROCEDIMIENTO INSERTAR PSICOLOGO
 --===============================================
-
 CREATE OR REPLACE PROCEDURE sp_insertar_psicologo(
     p_psico_primer_nombre IN psicologo.primer_nombre%TYPE,
     p_psico_segundo_nombre IN psicologo.segundo_nombre%TYPE,
@@ -149,6 +140,7 @@ CREATE OR REPLACE PROCEDURE sp_insertar_psicologo(
     p_psico_cedula IN psicologo.cedula%TYPE,
     p_psico_genero IN psicologo.genero%TYPE,
     p_psico_correo_institucional IN psicologo.correo_institucional%TYPE,
+    p_psico_telefono IN psicologo.telefono%TYPE,
     p_psico_casa IN psicologo.casa%TYPE,
     p_psico_calle IN psicologo.calle%TYPE,
     p_psico_corregimiento IN psicologo.corregimiento%TYPE,
@@ -156,25 +148,24 @@ CREATE OR REPLACE PROCEDURE sp_insertar_psicologo(
 ) AS
     v_id_cargo psicologo.id_cargo%TYPE;
 BEGIN
-
     SELECT id_cargo
-        INTO v_id_cargo
+    INTO v_id_cargo
     FROM cargo
     WHERE id_cargo = p_psico_id_cargo;
 
     INSERT INTO psicologo (
-        id_psico, 
-        primer_nombre, 
+        id_psico,
+        primer_nombre,
         segundo_nombre,
         apellido_paterno,
         apellido_materno,
-        cedula, 
+        cedula,
         genero,
         correo_institucional,
         telefono,
-        casa, 
+        casa,
         calle,
-        corregimiento, 
+        corregimiento,
         id_cargo
     ) VALUES (
         seq_id_psicologo.NEXTVAL,
@@ -185,6 +176,7 @@ BEGIN
         p_psico_cedula,
         p_psico_genero,
         p_psico_correo_institucional,
+        p_psico_telefono,
         p_psico_casa,
         p_psico_calle,
         p_psico_corregimiento,
@@ -193,9 +185,9 @@ BEGIN
 
 EXCEPTION
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS SOBRE EL CUAL EJECUTAR EL PROCEDIMIENTO' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS SOBRE EL CUAL EJECUTAR EL PROCEDIMIENTO ' || SQLERRM);
     WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR MAS DE UN DATO EN INDICE' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR MAS DE UN DATO EN INDICE ' || SQLERRM);
     WHEN OTHERS THEN
         DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
@@ -232,7 +224,10 @@ BEGIN
     IF v_id_carrera = 0 THEN
         RAISE_APPLICATION_ERROR(-20002, 'NO EXISTE ESTA CARRERA. NO SE PUEDE REGISTRAR AL ESTUDIANTE');
     END IF;
-    
+
+    -- Correccion: asigna NEXTVAL antes del INSERT para evitar PK NULL.
+    v_id_paciente := seq_id_paciente.NEXTVAL;
+
     INSERT INTO estudiante (
         id_paciente,
         primer_nombre,
@@ -273,13 +268,14 @@ BEGIN
 
 EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO ' || SQLERRM);
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS ' || SQLERRM);
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
+
 
 --===============================================
 -- PROCEDIMIENTO INSERTAR DOCENTE ATENDIDO
@@ -301,8 +297,8 @@ CREATE OR REPLACE PROCEDURE sp_insertar_docente(
     p_telefono IN Tlf_Docente.telefono%TYPE
 )
 AS
-    v_id_paciente   docente.id_paciente%TYPE;
-    v_id_facultad   NUMBER;
+    v_id_paciente docente.id_paciente%TYPE;
+    v_id_facultad NUMBER;
 BEGIN
     SELECT COUNT(*)
     INTO v_id_facultad
@@ -313,7 +309,11 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20002, 'NO EXISTE ESTA FACULTAD. NO SE PUEDE REGISTRAR AL DOCENTE');
     END IF;
 
+    -- Correccion: asigna NEXTVAL antes del INSERT para evitar PK NULL.
+    v_id_paciente := seq_id_docente.NEXTVAL;
+
     INSERT INTO docente (
+        id_paciente,
         primer_nombre,
         segundo_nombre,
         apellido_paterno,
@@ -327,6 +327,7 @@ BEGIN
         corregimiento,
         id_facultad
     ) VALUES (
+        v_id_paciente,
         p_primer_nombre,
         p_segundo_nombre,
         p_apellido_paterno,
@@ -339,8 +340,7 @@ BEGIN
         p_calle,
         p_corregimiento,
         p_id_facultad
-    )
-    RETURNING id_paciente INTO v_id_paciente;
+    );
 
     INSERT INTO Tlf_Docente (
         idPaciente,
@@ -354,13 +354,14 @@ BEGIN
 
 EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO ' || SQLERRM);
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS ' || SQLERRM);
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
+
 
 --===============================================
 -- PROCEDIMIENTO INSERTAR ADMINISTRATIVO ATENDIDO
@@ -384,7 +385,11 @@ CREATE OR REPLACE PROCEDURE sp_insertar_administrativo(
 AS
     v_id_paciente administrativo.id_paciente%TYPE;
 BEGIN
+    -- Correccion: asigna NEXTVAL antes del INSERT para evitar PK NULL.
+    v_id_paciente := seq_id_administrativo.NEXTVAL;
+
     INSERT INTO administrativo (
+        id_paciente,
         primer_nombre,
         segundo_nombre,
         apellido_paterno,
@@ -398,6 +403,7 @@ BEGIN
         corregimiento,
         departamento
     ) VALUES (
+        v_id_paciente,
         p_primer_nombre,
         p_segundo_nombre,
         p_apellido_paterno,
@@ -410,8 +416,7 @@ BEGIN
         p_calle,
         p_corregimiento,
         p_departamento
-    )
-    RETURNING id_paciente INTO v_id_paciente;
+    );
 
     INSERT INTO Tlf_Admin (
         idPaciente,
@@ -425,18 +430,18 @@ BEGIN
 
 EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO ' || SQLERRM);
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS ' || SQLERRM);
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
+
 
 --===============================================
 -- PROCEDIMIENTO INSERTAR CITA
 --===============================================
-
 CREATE OR REPLACE PROCEDURE sp_insertar_cita(
     p_fecha IN cita.fecha%TYPE,
     p_hora IN cita.hora%TYPE,
@@ -454,9 +459,14 @@ BEGIN
         p_id_docente,
         p_id_admin
     );
-    
+
+    IF v_tipo IS NULL THEN
+        RAISE_APPLICATION_ERROR(-20002, 'NO SE PUDO DETERMINAR EL TIPO DE PACIENTE DE LA CITA');
+    END IF;
+
     IF v_tipo = 'ESTUDIANTE' THEN
         INSERT INTO cita(
+            id_cita,
             fecha,
             hora,
             id_servicio,
@@ -465,6 +475,7 @@ BEGIN
             id_admin,
             id_psicologo
         ) VALUES (
+            seq_id_cita.NEXTVAL,
             p_fecha,
             p_hora,
             p_id_servicio,
@@ -476,6 +487,7 @@ BEGIN
 
     ELSIF v_tipo = 'DOCENTE' THEN
         INSERT INTO cita(
+            id_cita,
             fecha,
             hora,
             id_servicio,
@@ -484,6 +496,7 @@ BEGIN
             id_admin,
             id_psicologo
         ) VALUES (
+            seq_id_cita.NEXTVAL,
             p_fecha,
             p_hora,
             p_id_servicio,
@@ -495,6 +508,7 @@ BEGIN
 
     ELSIF v_tipo = 'ADMINISTRATIVO' THEN
         INSERT INTO cita(
+            id_cita,
             fecha,
             hora,
             id_servicio,
@@ -503,6 +517,7 @@ BEGIN
             id_admin,
             id_psicologo
         ) VALUES (
+            seq_id_cita.NEXTVAL,
             p_fecha,
             p_hora,
             p_id_servicio,
@@ -512,21 +527,21 @@ BEGIN
             p_id_psicologo
         );
     END IF;
-    
+
 EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICE DUPLICADO ' || SQLERRM);
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS ' || SQLERRM);
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
+
 
 --===============================================
 -- PROCEDIMIENTO REPROGRAMAR CITA
 --===============================================
-
 CREATE OR REPLACE PROCEDURE sp_reprogramar_cita(
     p_id_cita IN Cita.id_cita%TYPE,
     p_nueva_fecha IN Cita.fecha%TYPE,
@@ -576,18 +591,18 @@ BEGIN
 
 EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR INDICES DUPLICADOS' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICES DUPLICADOS ' || SQLERRM);
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS ' || SQLERRM);
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
+
 
 --===============================================
 -- PROCEDIMIENTO ELIMINAR CITA
 --===============================================
-
 CREATE OR REPLACE PROCEDURE sp_eliminar_cita(
     p_id_cita IN Cita.id_cita%TYPE
 )
@@ -601,20 +616,18 @@ BEGIN
 
     IF v_id_cita = 0 THEN
         RAISE_APPLICATION_ERROR(-20002, 'ERROR LA CITA NO EXISTE');
-
     ELSE
         UPDATE Cita
-        SET
-            estado = 'ELIMINADA'
+        SET estado = 'ELIMINADA'
         WHERE id_cita = p_id_cita;
     END IF;
-    
+
 EXCEPTION
     WHEN DUP_VAL_ON_INDEX THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR INDICES DUPLICADOS' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR INDICES DUPLICADOS ' || SQLERRM);
     WHEN NO_DATA_FOUND THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR NO DATOS ENCONTRADOS ' || SQLERRM);
     WHEN OTHERS THEN
-        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION' || SQLERRM);
+        DBMS_OUTPUT.PUT_LINE('ERROR DE EJECUCION ' || SQLERRM);
 END;
 /
