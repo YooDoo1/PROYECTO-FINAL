@@ -124,19 +124,19 @@
     **Tablas/columnas consultadas:** `estudiante(id_paciente, primer_nombre, apellido_paterno)`, `docente(id_paciente, primer_nombre, apellido_paterno)`, `administrativo(id_paciente, primer_nombre, apellido_paterno)`.
     **Tablas modificadas:** ninguna.
 
-19. **Agregar manejo de excepciones en todos los procedimientos, funciones y triggers.**
+19. **Agregar manejo de excepciones en todos los procedimientos, funciones y triggers.** HECHO
     **Tipo de proceso SQL:** bloque `EXCEPTION`.
     **Enunciado:** Cada proceso almacenado debe controlar errores previsibles para cumplir con el lineamiento formal de programación almacenada. No basta con que el proceso ejecute; debe manejar duplicados, claves foráneas inválidas, registros inexistentes y errores generales.
     **Qué hace:** usa excepciones como `DUP_VAL_ON_INDEX`, `NO_DATA_FOUND`, errores de integridad referencial y `WHEN OTHERS`.
     **Tablas/procesos afectados:** todos los procedimientos y triggers sobre `cargo`, `facultad`, `carrera`, `servicio`, `psicologo`, `estudiante`, `docente`, `administrativo`, `Tlf_Estudiante`, `Tlf_Docente`, `Tlf_Admin`, `cita`, `auditoria_cita`, `estadistica_atenciones`, `reporte_atenciones`.
 
-20. **Crear invocaciones de prueba para cada proceso almacenado.**
+20. **Crear invocaciones de prueba para cada proceso almacenado.** HECHO
     **Tipo de proceso SQL:** bloques anónimos `BEGIN ... END; /` y consultas `SELECT`.
     **Enunciado:** Se deben documentar invocaciones para demostrar en sustentación que cada procedimiento, función y trigger funciona. Esto responde directamente al lineamiento de establecer procesos de invocación para la programación almacenada.
     **Qué hace:** ejecuta cargas paramétricas, inserciones de psicólogos, inserciones de estudiantes/docentes/administrativos, creación de citas, reprogramación, eliminación/anulación, generación de reportes y verificación de auditoría/estadística.
     **Tablas/columnas afectadas:** todas las tablas transaccionales y de control del proyecto PSIREG.
 
-21. **Actualizar la documentación del informe por cada proceso implementado.**
+21. **Actualizar la documentación del informe por cada proceso implementado.** WIP
     **Tipo de proceso:** documentación técnica del informe.
     **Enunciado:** Cada proceso debe quedar sustentado formalmente en el informe, indicando su objetivo, tipo SQL, relación con el modelo de negocio, parámetros, tablas afectadas, columnas afectadas, reglas de negocio, excepciones e invocación de prueba.
     **Procesos a documentar:** `sp_cargar_parametricas`, `sp_insertar_psicologo`, `sp_insertar_estudiante`, `sp_insertar_docente`, `sp_insertar_administrativo`, `fn_tipo_paciente_cita`, `sp_insertar_cita`, `trg_cita_paciente_unico`, `auditoria_cita`, `trg_auditoria_cita`, `estadistica_atenciones`, `trg_estadistica_atenciones`, `sp_reprogramar_cita`, `sp_eliminar_cita` o `sp_anular_cita`, `reporte_atenciones`, `sp_generar_reporte_atenciones`, `fn_nombre_paciente_cita`.
