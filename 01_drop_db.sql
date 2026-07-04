@@ -46,8 +46,24 @@ END;
 
 /* ============================================================
    2. ELIMINAR TRIGGERS
-   El trigger depende de la tabla CITA.
+   Los triggers dependen de la tabla CITA y de tablas auxiliares.
    ============================================================ */
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TRIGGER trg_estadistica_atenciones';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -4080 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TRIGGER tr_auditoria_cita';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -4080 THEN RAISE; END IF;
+END;
+/
 
 BEGIN
     EXECUTE IMMEDIATE 'DROP TRIGGER trg_cita_paciente_unico';
@@ -64,6 +80,30 @@ END;
    CASCADE CONSTRAINTS elimina dependencias de integridad.
    PURGE evita que queden en la papelera de reciclaje.
    ============================================================ */
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE reporte_atenciones CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE estadistica_atenciones CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE auditoria_cita CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
 
 BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE Cita CASCADE CONSTRAINTS PURGE';
@@ -129,7 +169,7 @@ END;
 
 
 /* ============================================================
-   5. ELIMINAR TABLAS PARAMÉTRICAS DE TELÉFONO
+   5. ELIMINAR TABLAS PARAMETRICAS DE TELEFONO
    ============================================================ */
 
 BEGIN
@@ -208,11 +248,124 @@ END;
 
 
 /* ============================================================
-   8. ELIMINAR SECUENCIAS SI LUEGO LAS AGREGAS
-   En el script actual no aparecen secuencias, pero dejo el
-   bloque preparado por si las implementas después.
+   8. ELIMINAR SECUENCIAS
+   Se eliminan las secuencias vigentes del proyecto y las variantes
+   antiguas para garantizar un reinicio integro.
    ============================================================ */
 
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_cargo';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_psicologo';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_facultad';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_carrera';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_paciente';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_docente';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_administrativo';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_servicio';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_cita';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_tipo_tlf_est';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_tipo_tlf_doc';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_tipo_tlf_admin';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_auditoria';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_reporte_atenciones';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+/* Variantes antiguas detectadas en versiones previas del script. */
 BEGIN
     EXECUTE IMMEDIATE 'DROP SEQUENCE seq_cargo';
 EXCEPTION
