@@ -7,13 +7,13 @@ SET SERVEROUTPUT ON;
 -- 1. CARGA PARAMETRICA
 BEGIN
     sp_cargar_parametricas(
-        'PSICOLOGO CLINICO',
-        'FACULTAD DE SISTEMAS',
-        'ING SOFTWARE',
-        'ORIENTACION',
-        'PERSONAL',
-        'PERSONAL',
-        'PERSONAL'
+        'Psicólogo Clínico',
+        'Ingeniería de Sistemas Computacionales',
+        'Lic. Desarrollo Software',
+        'Orientación Psicológica',
+        'Personal',
+        'Personal',
+        'Personal'
     );
 END;
 /
@@ -33,7 +33,7 @@ BEGIN
     SELECT id_cargo
     INTO v_id_cargo
     FROM cargo
-    WHERE UPPER(nombre_cargo) = 'PSICOLOGO CLINICO';
+    WHERE UPPER(nombre_cargo) = UPPER('Psicólogo Clínico');
 
     sp_insertar_psicologo(
         'ANA',
@@ -63,12 +63,12 @@ BEGIN
     SELECT id_carrera
     INTO v_id_carrera
     FROM Carrera
-    WHERE UPPER(nombre_carrera) = 'ING SOFTWARE';
+    WHERE UPPER(nombre_carrera) = UPPER('Lic. Desarrollo Software');
 
     SELECT id_tipo
     INTO v_id_tipo
     FROM TipoTlf_Est
-    WHERE UPPER(nombre_tipo) = 'PERSONAL';
+    WHERE UPPER(nombre_tipo) = UPPER('Personal');
 
     sp_insertar_estudiante(
         'CARLOS',
@@ -100,12 +100,12 @@ BEGIN
     SELECT id_facultad
     INTO v_id_facultad
     FROM Facultad
-    WHERE UPPER(nombre_facultad) = 'FACULTAD DE SISTEMAS';
+    WHERE UPPER(nombre_facultad) = UPPER('Ingeniería de Sistemas Computacionales');
 
     SELECT id_tipo
     INTO v_id_tipo
     FROM TipoTlf_Docente
-    WHERE UPPER(nombre_tipo) = 'PERSONAL';
+    WHERE UPPER(nombre_tipo) = UPPER('Personal');
 
     sp_insertar_docente(
         'LUIS',
@@ -137,7 +137,7 @@ BEGIN
     SELECT id_tipo
     INTO v_id_tipo
     FROM TipoTlf_Admin
-    WHERE UPPER(nombre_tipo) = 'PERSONAL';
+    WHERE UPPER(nombre_tipo) = UPPER('Personal');
 
     sp_insertar_administrativo(
         'MARTA',
@@ -186,7 +186,7 @@ BEGIN
     SELECT id_servicio
     INTO v_id_servicio
     FROM Servicio
-    WHERE UPPER(nombre_servicio) = 'ORIENTACION';
+    WHERE UPPER(nombre_servicio) = UPPER('Orientación Psicológica');
 
     SELECT id_psico
     INTO v_id_psicologo
@@ -233,7 +233,7 @@ BEGIN
     SELECT id_servicio
     INTO v_id_servicio
     FROM Servicio
-    WHERE UPPER(nombre_servicio) = 'ORIENTACION';
+    WHERE UPPER(nombre_servicio) = UPPER('Orientación Psicológica');
 
     SELECT id_psico
     INTO v_id_psicologo
