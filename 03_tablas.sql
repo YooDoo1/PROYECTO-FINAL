@@ -316,7 +316,8 @@ CREATE TABLE Tlf_Admin (
 CREATE TABLE Cita (
     id_cita        NUMBER(10) PRIMARY KEY,
     fecha          DATE NOT NULL,
-    hora           VARCHAR2(10) NOT NULL,
+    -- Oracle DATE almacena fecha y hora. Se usa para compatibilidad con auditoria y reporte.
+    hora           DATE NOT NULL,
     id_servicio    NUMBER(10) NOT NULL,
     id_estudiante  NUMBER(10),
     id_docente     NUMBER(10),
