@@ -82,6 +82,14 @@ END;
    ============================================================ */
 
 BEGIN
+    EXECUTE IMMEDIATE 'DROP TABLE reporte_detalles CASCADE CONSTRAINTS PURGE';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -942 THEN RAISE; END IF;
+END;
+/
+
+BEGIN
     EXECUTE IMMEDIATE 'DROP TABLE reporte_atenciones CASCADE CONSTRAINTS PURGE';
 EXCEPTION
     WHEN OTHERS THEN
@@ -358,6 +366,17 @@ END;
 /
 
 BEGIN
+    EXECUTE IMMEDIATE 'DROP SEQUENCE seq_id_reporte';
+EXCEPTION
+    WHEN OTHERS THEN
+        IF SQLCODE != -2289 THEN RAISE; END IF;
+END;
+/
+
+
+/* Variantes antiguas detectadas en versiones previas del script. */
+
+BEGIN
     EXECUTE IMMEDIATE 'DROP SEQUENCE seq_reporte_atenciones';
 EXCEPTION
     WHEN OTHERS THEN
@@ -365,7 +384,6 @@ EXCEPTION
 END;
 /
 
-/* Variantes antiguas detectadas en versiones previas del script. */
 BEGIN
     EXECUTE IMMEDIATE 'DROP SEQUENCE seq_cargo';
 EXCEPTION
