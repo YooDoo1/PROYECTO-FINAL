@@ -93,7 +93,7 @@ CREATE TABLE Psicologo (
     genero                VARCHAR2(10) NOT NULL,
     correo_institucional  VARCHAR2(25) NOT NULL,
     telefono              NUMBER(8) NOT NULL,
-    casa                  VARCHAR2(25),
+    casa                  VARCHAR2(25), NOT NULL
     calle                 VARCHAR2(25) NOT NULL,
     corregimiento         VARCHAR2(25) NOT NULL,
     id_cargo              NUMBER(3) NOT NULL,
@@ -140,7 +140,7 @@ CREATE TABLE Estudiante (
     cedula                VARCHAR2(20) NOT NULL,
     genero                VARCHAR2(10) NOT NULL,
     correo_institucional  VARCHAR2(25) NOT NULL,
-    casa                  VARCHAR2(25),
+    casa                  VARCHAR2(25), NOT NULL
     calle                 VARCHAR2(25) NOT NULL,
     corregimiento         VARCHAR2(25) NOT NULL,
     id_carrera            NUMBER(10) NOT NULL,
@@ -200,7 +200,7 @@ CREATE TABLE Docente (
     genero                VARCHAR2(10) NOT NULL,
     correo_institucional  VARCHAR2(25) NOT NULL,
     telefono_personal     NUMBER(8) NOT NULL,
-    casa                  VARCHAR2(25),
+    casa                  VARCHAR2(25), NOT NULL
     calle                 VARCHAR2(25) NOT NULL,
     corregimiento         VARCHAR2(25) NOT NULL,
     id_facultad           NUMBER(10),
